@@ -1,0 +1,23 @@
+version: "2"
+services:
+  tashizan:
+    build: .
+    command: node server.js
+    environment:
+      VIRTUAL_HOST: akinator.to-hutohu.com
+      LETSENCRYPT_HOST: akinator.to-hutohu.com
+      LETSENCRYPT_EMAIL: tohu.soy@gmail.com
+    restart: always
+    working_dir: /work
+    volumes:
+      - .:/work
+      - /work/node_modules
+    ports:
+      - 8080
+    networks:
+      - docker-nginx_default
+networks:
+  docker-nginx_default:
+    external: true
+
+

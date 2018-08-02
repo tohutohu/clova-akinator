@@ -1,0 +1,24 @@
+{
+  "name": "clova-akinator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tohutohu/clova-akinator.git"
+  },
+  "author": "tohutohu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tohutohu/clova-akinator/issues"
+  },
+  "homepage": "https://github.com/tohutohu/clova-akinator#readme",
+  "dependencies": {
+    "@line/clova-cek-sdk-nodejs": "^1.0.1",
+    "express": "^4.16.3",
+    "request-promise": "^4.2.2"
+  }
+}
