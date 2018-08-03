@@ -1,17 +1,12 @@
 const Akinator = require('./akinator.js');
-
-let session, signature, step;
-
 const clova = require('@line/clova-cek-sdk-nodejs');
 const express = require('express');
 
 const clovaSkillHandler = clova.Client
   .configureSkill()
   .onLaunchRequest(async responseHelper => {
-    console.log(responseHelper)
     const {params, question} = await Akinator.start()
-    responseObject.sessionAttributes = params
-    responseObject.sessionAttributes.step++
+    responseHelper.responseObject.sessionAttributes = params
 
     responseHelper.setSimpleSpeech({
       lang: 'ja',
@@ -20,28 +15,36 @@ const clovaSkillHandler = clova.Client
     });
   })
   .onIntentRequest(async responseHelper => {
-    console.log(responseHelper)
     const intent = responseHelper.getIntentName();
     const sessionId = responseHelper.getSessionId();
-    const params = responseObject.sessionAttributes
+    const params = responseHelper.responseObject.sessionAttributes
+    console.log(params)
     let answer = 0
 
     switch (intent) {
+      case 'Yes':
       case 'Clova.YesIntent':
+        console.log('Yes')
         answer = 0
         break;
+      case 'No':
       case 'Clova.NoIntent':
+        console.log('No')
         answer = 1
         break;
+      default:
+        console.log('Other')
+        break
     }
     const question = await Akinator.answer(params, answer)
-    responseObject.sessionAttributes.step++
+    console.log(question)
+    responseHelper.responseObject.sessionAttributes.step++
     if (Number(question.progression) > 99) {
       const answer = await Akinator.list(params)
       responseHelper.setSimpleSpeech(
         clova.SpeechBuilder.createSpeechText('わかりました！あなたが思い浮かべているのは' + answer.name + 'ですね！')
       );
-      responseHelper.responseObject.shouldEndSession = true
+      responseHelper.responseObject.response.shouldEndSession = true
       return
     }
     responseHelper.setSimpleSpeech(
@@ -76,21 +79,3 @@ app.post('*', (req, res) => {
 
 app.listen(8080);
 
-
-const main = async () => {
-  const client = new Akinator()
-  const po = await client.start()
-  console.log(po)
-  console.log(client)
-
-  while(true) {
-    const res = await client.answer(0)
-    console.log(res)
-    if (Number(res.parameters.progression) > 99) {
-      break
-    }
-  }
-  const res = await client.list()
-  console.log(JSON.stringify(res, null, '  '))
-}
-main()
